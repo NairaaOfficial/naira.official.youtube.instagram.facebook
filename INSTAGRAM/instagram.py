@@ -326,7 +326,7 @@ def main():
         time.sleep(60)
     
     # Step 4: Publish the media if ready    
-    # publish_media_object(conn, media_object_id)
+    publish_media_object(conn, media_object_id)
 
     # Step 5: Check the published media status.
     max_retries = 10
