@@ -3,7 +3,7 @@ name: INSTAGRAM REEL SCHEDULER
 on:
   workflow_dispatch:
   schedule:
-    # - cron: '30 11 * * *'  # Runs at 5:00 PM IST
+    - cron: '30 11 * * *'  # Runs at 5:00 PM IST
     # - cron: '0 16 * * *'   # Runs at 9:30 PM IST
   
 jobs:
