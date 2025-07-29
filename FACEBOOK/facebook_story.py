@@ -248,8 +248,8 @@ def main():
     reel_number = read_counter(counter_file)
     # Execute the code
     print(f"Reel Number : {reel_number}")
-    
-    video = f"REEL_TO_UPLOAD/reel_{reel_number}.mp4"  # Link to the video file (must be accessible)
+
+    video = f"STORY_TO_UPLOAD/story_{reel_number}.mp4"  # Link to the video file (must be accessible)
     # Trim the video to less than 60 seconds before uploading
 
     if os.path.exists(video):
