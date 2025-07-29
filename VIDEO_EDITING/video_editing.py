@@ -14,7 +14,7 @@ video_folder_path = 'VIDEOS'
 story_upload_folder_path = 'STORY_TO_UPLOAD'
 
 # GIF Related Parameters
-gif_list = ["Ronaldo.gif","Messi.gif"]
+gif_list = ["gif_1.gif", "gif_2.gif", "gif_3.gif"]
 gif_file = random.choice(gif_list)
 overlay_gif_path = f'VIDEO_EDITING/GIF/{gif_file}'
 
@@ -74,23 +74,30 @@ def process_video(input_video_path, reel_number):
         """
         # Load the final video
         video = VideoFileClip(input_video_path)
-
+        print("overlaying gif on video = ", overlay_gif_path)
         # Load the GIF as a VideoClip
         overlay_gif_clip = VideoFileClip(overlay_gif_path, has_mask=True)  # 'has_mask' keeps transparency
 
         # Resize GIF
-        overlay_gif_clip = overlay_gif_clip.resized(width=video.w + 4000)
-   
+        if(overlay_gif_path.endswith("gif_1.gif")):
+            width = video.w - 200
+            # Set overlay position
+            gif_y = 600
+            gif_x = 100
+        else:
+            width = video.w + 400
+            # Set overlay position
+            gif_y = 600
+            gif_x = -400
+        
+        overlay_gif_clip = overlay_gif_clip.resized(width=width)
+
         # Trim or Loop the GIF to match the video duration
         print("gif duration = ",overlay_gif_clip.duration)
         print("video duration =",video.duration)
         
         if overlay_gif_clip.duration > video.duration:
             overlay_gif_clip = overlay_gif_clip.subclipped(0, video.duration)  # Trim GIF
-
-        # Set overlay position
-        gif_y = -350
-        gif_x = -2200
         
         print(f"GIF Position: (x={gif_x}, y={gif_y})")
         print(f"GIF Dimensions: (w={overlay_gif_clip.w}, h={overlay_gif_clip.h})")
