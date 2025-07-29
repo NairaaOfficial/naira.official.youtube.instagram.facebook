@@ -9,14 +9,14 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       # Checkout the repository
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            REEL_TO_UPLOAD/
+            STORY_TO_UPLOAD/
             INSTAGRAM/
             counter.txt
             requirements.txt
