@@ -119,6 +119,7 @@ def filter_generated_text(text):
     """
     # Remove all occurrences of * and ** from the text
     filtered_text = text.replace("*", "")
+    filtered_text = filtered_text.replace("\"", "")
     return filtered_text
 
 def refresh_access_token(conn):
