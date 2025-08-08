@@ -2,8 +2,8 @@ name: VIDEO EDITING SCHEDULER
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '30 9 * * *'   # Runs at 3:00 PM IST
+  # schedule:
+  #   - cron: '30 9 * * *'   # Runs at 3:00 PM IST
     # - cron: '30 14 * * *'  # Runs at 8:00 PM IST
   
 jobs:
