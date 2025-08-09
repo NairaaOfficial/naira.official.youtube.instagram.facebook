@@ -19,17 +19,37 @@ import google_auth_oauthlib.flow
 from google.oauth2.credentials import Credentials
 from dotenv import load_dotenv
 
-titles = [
-    "From Nothing to Something: Watch It Built from Scratch! #shorts",
-    "How It’s Made from Scratch: You Won’t Believe the Process! #shorts",
-    "The Art of Building from Scratch – Subscribe for More! #shorts",
-    "Creating Masterpieces from Scratch – Like and Watch! #shorts",
-    "Want to See It Built? Hit Like and Watch Now! #shorts",
-    "From Raw Materials to Perfection: Built from Scratch! #shorts",
-    "Mind-Blowing Build! Watch It Made from Scratch – Follow! #shorts",
-    "Witness the Magic: Built from Scratch – Like and Subscribe! #shorts",
-    "Can You Guess How This is Made? Built from Scratch! #shorts"
-]
+prompt = (
+    f"Write ONE single Instagram caption for a female influencer (max 100 characters) that is engaging, fun, and emotionally appealing.\n"
+    "The caption must:\n"
+    "- Be in English.\n"
+    "- Include emojis naturally.\n"
+    "- End with up to 10 trending and relevant hashtags.\n"
+    "- Be written in a tone that fits short-form viral content (e.g. Reels).\n"
+    "- Do not describe about any landscapes or sunsets, be it only engaging with audience.\n"
+    "- Example 1 - Everything is perfect...but it would have been better if you were with me ❤️\n"
+    "- Example 2 - Not every queen wears a crown — some wear calm 🙂 \n"
+    "- Example 3 - On your mind yet? \n "
+    "- Example 4 - Guess what I am thinking… \n"
+    "- Example 5 - Just a little fiery today \n"
+    "- Example 6 - Just me being me \n"
+    "- Example 7 - Happy Vibes 🙂😇 \n"
+    "- Example 9 - Look, but don’t blink 👀💁🏻‍♀️ \n"
+    "- Example 10 - Your crush ?? 👀💁🏻‍♀️ \n"
+    "- Example 11 - Dressed up for You 🫶🏻💞 \n"
+    "- Example 12 - Golden Hours \n"
+    "- Example 13 - Is the view distracting… or motivating? 🙄 \n"
+    "- Example 14 - Careful what you wish for, you might just get it \n"
+    "- Example 15 - No rush. I’m not going anywhere. 🩷 \n"
+    "- Example 16 - Just a soft soul finding her way 💞 🩷 \n"
+    "- Example 17 - Be patient with me… I’m still learning how to be seen. 🤷🏻‍♀️ \n"
+    "- Example 18 - I called you, are you coming? ✨🤨🤭 \n"
+    "- Example 19 - I see you 👀👀 \n"
+    "- Example 20 - I smile when I read your replies. Don’t tell anyone. 🤫🙃 \n"
+    "- Example 21 - Can I be Your Crush 🤗😻 \n"
+    "- Example 22 - No Botox, no filter, no surgery—just me in my most Feminine 🤍🤍 \n"
+    "STRICT RULE: Do NOT include any introductions, explanations, or say anything like 'here is your caption'. Output ONLY the caption text — nothing else."
+)
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -63,9 +83,8 @@ OAUTH_FILE = "YOUTUBE/oauth2.json"
 
 # Get All required Tokens and Ids,
 load_dotenv()
-EMAIL = os.getenv('YOUTUBE_EMAIL')
-PASSWORD = os.getenv('YOUTUBE_PASSWORD')
 REDIRECT_URI = os.getenv('YOUTUBE_REDIRECT_URI')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 # This OAuth 2.0 access scope allows an application to upload files to the
 # authenticated user's YouTube channel, but doesn't allow other types of access.
@@ -257,7 +276,8 @@ def initialize_upload(youtube, options):
             categoryId=options.category
         ),
         status=dict(
-            privacyStatus=options.privacyStatus
+            privacyStatus=options.privacyStatus,
+            selfDeclaredMadeForKids=options.selfDeclaredMadeForKids
         )
     )
 
@@ -279,7 +299,7 @@ def initialize_upload(youtube, options):
         media_body=MediaFileUpload(options.file, chunksize=-1, resumable=True)
     )
 
-    resumable_upload(insert_request)
+    return resumable_upload(insert_request)
 
 # This method implements an exponential backoff strategy to resume a failed upload.
 def resumable_upload(insert_request):
@@ -314,6 +334,55 @@ def resumable_upload(insert_request):
             print("Sleeping %f seconds and then retrying..." % sleep_seconds)
             time.sleep(sleep_seconds)
 
+    return response['id']
+
+def Age_restriction(uploaded_video_id):
+    youtube.videos().update(
+        part="contentDetails",
+        body={
+            "id": uploaded_video_id,
+            "contentDetails": {
+                "contentRating": {
+                    "ytRating": "ytAgeRestricted"
+                }
+            }
+        }
+    ).execute()
+
+def gemini_generate_text(prompt):
+    """
+    Uses Google Gemini API to generate text based on the input prompt.
+    Returns the generated text as a string.
+    """
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [
+            {"parts": [{"text": prompt}]}
+        ]
+    }
+    params = {"key": GEMINI_API_KEY}
+    response = requests.post(url, headers=headers, params=params, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        try:
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError):
+            return "No output from Gemini API."
+    else:
+        return f"Error: {response.status_code} - {response.text}"
+
+def read_prompt(prompt_file):
+    print (prompt_file)
+    try:
+        with open(prompt_file, "r", encoding="utf-8") as file:
+            prompt = file.read()
+        return prompt
+    except FileNotFoundError:
+        return "prompt file not found."
+    except Exception as e:
+        return f"An error occurred: {e}"
+    
 def read_counter(counter_file):
     """Read the current counter value from the file, or initialize it."""
     if os.path.exists(counter_file):
@@ -345,7 +414,7 @@ def read_tags(tags_file):
 
 if __name__ == '__main__':
     # Define a file to store the counter
-    counter_file = 'counter.txt'    
+    counter_file = 'YOUTUBE/counter.txt'    
     reel_number = read_counter(counter_file)
     # Execute the code
     print(f"Reel Number : {reel_number}")
@@ -362,15 +431,18 @@ if __name__ == '__main__':
     tags_file = 'YOUTUBE/tags.txt'
     tags = read_tags(tags_file)
     print(f"Tags : {tags}")
-    
-    title = random.choice(titles)
+    prompt_file = 'FACEBOOK/prompt.txt'
+    user_prompt = read_prompt(prompt_file)
+    title = gemini_generate_text(user_prompt)
     print ("title = ",title)
     argparser.add_argument("--file", required=False, default=default_file_path, help="Video file to upload")
-    argparser.add_argument("--title", help="Video title", default=title)
+    argparser.add_argument("--title", help="Video title", default="title")
     argparser.add_argument("--description", help="Video description", default=description)
     argparser.add_argument("--category", default="27", help="Numeric video category. " + "See https://developers.google.com/youtube/v3/docs/videoCategories/list")
     argparser.add_argument("--keywords", help="Video keywords, comma separated", default=tags)
     argparser.add_argument("--privacyStatus", choices=VALID_PRIVACY_STATUSES, default=VALID_PRIVACY_STATUSES[0], help="Video privacy status.")
+    argparser.add_argument("--selfDeclaredMadeForKids", choices=["true", "false"], default="false", help="Whether the video is made for kids.")
+
     args = argparser.parse_args()
 
     if not os.path.exists(args.file):
@@ -378,6 +450,7 @@ if __name__ == '__main__':
 
     youtube = get_authenticated_service()
     try:
-        initialize_upload(youtube, args)
+        uploaded_video_id = initialize_upload(youtube, args)
+        Age_restriction(uploaded_video_id)
     except HttpError as e:
         print("An HTTP error %d occurred:\n%s" % (e.resp.status, e.content))
