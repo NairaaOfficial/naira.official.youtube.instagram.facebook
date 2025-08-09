@@ -222,6 +222,17 @@ def publish_post(conn, message, link=None, published=True):
     else:
         print("Failed to publish text:", json.loads(response.read().decode("utf-8")))
 
+def read_caption(caption_file):
+    print (caption_file)
+    try:
+        with open(caption_file, "r", encoding="utf-8") as file:
+            caption = file.read()
+        return caption
+    except FileNotFoundError:
+        return "Caption file not found."
+    except Exception as e:
+        return f"An error occurred: {e}"
+    
 def read_prompt(prompt_file):
     print (prompt_file)
     try:
@@ -249,7 +260,8 @@ if __name__ == "__main__":
     print("Generated Text:", TEXT)
     FILTER_TEXT = filter_generated_text(TEXT)
     # Add a custom text to the generated text
-    custom_text = "Follow me here for more updates! ❤️"
+    custom_text_file = 'FACEBOOK/caption.txt'
+    custom_text = read_caption(custom_text_file)
     FILTER_TEXT += f" {custom_text}"
     print("Filtered Text:", FILTER_TEXT)
     
