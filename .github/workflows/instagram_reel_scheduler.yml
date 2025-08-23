@@ -2,9 +2,9 @@ name: INSTAGRAM REEL SCHEDULER
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '30 11 * * *'  # Runs at 5:00 PM IST
-    # - cron: '0 16 * * *'   # Runs at 9:30 PM IST
+  schedule:
+    - cron: '30 11 * * *'  # Runs at 5:00 PM IST
+    - cron: '0 16 * * *'   # Runs at 9:30 PM IST
   
 jobs:
   run-script:
@@ -16,9 +16,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            REEL_TO_UPLOAD/
             INSTAGRAM/
-            counter.txt
+            counter_video.txt
             requirements.txt
           fetch-depth: 1
 
@@ -40,7 +39,7 @@ jobs:
 
       # Run your Python script
       - name: Run Python script
-        run: python3 INSTAGRAM/instagram.py
+        run: python3 INSTAGRAM/instagram_reel.py
         
       # Check if .env has been modified, pull, and push the modified changes.
       - name: Commit and Push Changes
