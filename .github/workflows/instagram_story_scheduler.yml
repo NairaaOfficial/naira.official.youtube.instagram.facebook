@@ -40,6 +40,17 @@ jobs:
 
       # Run your Python script
       - name: Run Python script
+        env:
+            APP_ID: ${{ secrets.APP_ID }}
+            APP_SECRET: ${{ secrets.APP_SECRET }}
+            API_VERSION: ${{ secrets.API_VERSION }}
+            INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+            INSTAGRAM_APP_ID: ${{ secrets.INSTAGRAM_APP_ID }}
+            INSTAGRAM_APP_SECRET: ${{ secrets.INSTAGRAM_APP_SECRET }}
+            INSTAGRAM_BASE_URL: ${{ secrets.INSTAGRAM_BASE_URL }}
+            INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+            RENDER_BASE_VIDEO_URL: ${{ secrets.RENDER_BASE_VIDEO_URL }}
+            GEMINI_FACEBOOK_IMAGE_VIDEO_KEY: ${{ secrets.GEMINI_FACEBOOK_IMAGE_VIDEO_KEY }}
         run: python3 INSTAGRAM/instagram_story.py
         
       # Check if .env has been modified, pull, and push the modified changes.
