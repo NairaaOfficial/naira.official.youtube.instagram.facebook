@@ -21,7 +21,7 @@ APP_SECRET = os.environ['APP_SECRET']
 ACCESS_TOKEN = os.environ['FACEBOOK_ACCESS_TOKEN']
 API_VERSION = os.environ['API_VERSION']
 RENDER_BASE_VIDEO_URL = os.environ['RENDER_BASE_VIDEO_URL']
-GEMINI_FACEBOOK_IMAGE_VIDEO_KEY = os.environ['GEMINI_FACEBOOK_IMAGE_VIDEO_KEY']
+GEMINI_IMAGE_VIDEO_CAPTION_KEY = os.environ['GEMINI_IMAGE_VIDEO_CAPTION_KEY']
 
 DEFAULT_TEXT = [
     "Would you rather cuddle all night or steal kisses all day? 😘",
@@ -79,35 +79,22 @@ def initialize_connection():
 
 def get_gemini_caption(prompt):
     """
-    Uses OpenRouter API to generate text based on the input prompt.
+    Uses Google Gemini API to generate text based on the input prompt.
     Returns the generated text as a string.
     """
-    conn = http.client.HTTPSConnection("openrouter.ai")
-    headers = {
-        "Authorization": f"Bearer {GEMINI_FACEBOOK_IMAGE_VIDEO_KEY}",
-        "Content-Type": "application/json",
-    }
-    payload = json.dumps({
-        "model": "google/gemini-2.0-flash-exp:free",
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt
-                    }
-                ]
-            }
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "contents": [
+            {"parts": [{"text": prompt}]}
         ]
-    })
-
-    conn.request("POST", "/api/v1/chat/completions", body=payload, headers=headers)
-    response = conn.getresponse()
-    if response.status == 200:
-        result = json.loads(response.read().decode("utf-8"))
+    }
+    params = {"key": GEMINI_IMAGE_VIDEO_CAPTION_KEY}
+    response = requests.post(url, headers=headers, params=params, json=payload)
+    if response.status_code == 200:
+        data = response.json()
         try:
-            return result["choices"][0]["message"]["content"]
+            return data["candidates"][0]["content"]["parts"][0]["text"]
         except (KeyError, IndexError):
             return random.choice(DEFAULT_TEXT)
     else:
@@ -323,7 +310,7 @@ def publish_media_object(conn, media_id, caption):
         "upload_phase":"finish",
         "video_state":"PUBLISHED",
         "description":caption,
-        "title":"nairaaa.official",
+        "title":"nairaa.babe",
         "access_token": ACCESS_TOKEN
     }
 

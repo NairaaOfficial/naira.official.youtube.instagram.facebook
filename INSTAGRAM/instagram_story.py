@@ -21,7 +21,6 @@ APP_ID = os.environ['APP_ID']
 APP_SECRET = os.environ['APP_SECRET']
 ACCESS_TOKEN = os.environ['INSTAGRAM_ACCESS_TOKEN']
 API_VERSION = os.environ['API_VERSION']
-GEMINI_API_KEY = os.environ['GEMINI_API_KEY']
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
