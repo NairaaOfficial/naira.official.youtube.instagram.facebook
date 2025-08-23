@@ -6,7 +6,6 @@ import time
 import os
 import random
 import urllib.parse
-from dotenv import load_dotenv
 from datetime import datetime
 import requests
 
@@ -15,15 +14,14 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Define your access token, Instagram account ID, and the video details
 # Get All required Tokens and Ids,
-load_dotenv()
-ACCOUNT_ID = os.getenv('INSTAGRAM_ACCOUNT_ID')
-BASE_URL = os.getenv('INSTAGRAM_BASE_URL')
-APP_ID = os.getenv('APP_ID')
-APP_SECRET = os.getenv('APP_SECRET')
-ACCESS_TOKEN = os.getenv('INSTAGRAM_ACCESS_TOKEN')
-API_VERSION = os.getenv('API_VERSION')
-RENDER_BASE_VIDEO_URL = os.getenv('RENDER_BASE_VIDEO_URL')
-GEMINI_FACEBOOK_IMAGE_VIDEO_KEY = os.getenv('GEMINI_FACEBOOK_IMAGE_VIDEO_KEY')
+ACCOUNT_ID = os.environ['INSTAGRAM_ACCOUNT_ID']
+BASE_URL = os.environ['INSTAGRAM_BASE_URL']
+APP_ID = os.environ['APP_ID']
+APP_SECRET = os.environ['APP_SECRET']
+ACCESS_TOKEN = os.environ['INSTAGRAM_ACCESS_TOKEN']
+API_VERSION = os.environ['API_VERSION']
+RENDER_BASE_VIDEO_URL = os.environ['RENDER_BASE_VIDEO_URL']
+GEMINI_FACEBOOK_IMAGE_VIDEO_KEY = os.environ['GEMINI_FACEBOOK_IMAGE_VIDEO_KEY']
 
 DEFAULT_TEXT = [
     "Would you rather cuddle all night or steal kisses all day? 😘",

@@ -7,21 +7,19 @@ import io
 import os
 import random
 from datetime import datetime
-from dotenv import load_dotenv
 
 # Set the standard output to handle UTF-8
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Define your access token, Facebook account ID, and the video details
 # Get All required Tokens and Ids,
-load_dotenv()
-ACCOUNT_ID = os.getenv('FACEBOOK_ACCOUNT_ID')
-BASE_URL = os.getenv('FACEBOOK_BASE_URL')
-APP_ID = os.getenv('APP_ID')
-APP_SECRET = os.getenv('APP_SECRET')
-ACCESS_TOKEN = os.getenv('FACEBOOK_ACCESS_TOKEN')
-API_VERSION = os.getenv('API_VERSION')
-GEMINI_FACEBOOK_TEXT_KEY = os.getenv('GEMINI_FACEBOOK_TEXT_KEY')
+ACCOUNT_ID = os.environ['FACEBOOK_ACCOUNT_ID']
+BASE_URL = os.environ['FACEBOOK_BASE_URL']
+APP_ID = os.environ['APP_ID']
+APP_SECRET = os.environ['APP_SECRET']
+ACCESS_TOKEN = os.environ['FACEBOOK_ACCESS_TOKEN']
+API_VERSION = os.environ['API_VERSION']
+GEMINI_FACEBOOK_TEXT_KEY = os.environ['GEMINI_FACEBOOK_TEXT_KEY']
 
 DEFAULT_TEXT = [
     "Would you rather cuddle all night or steal kisses all day? 😘",
@@ -268,7 +266,7 @@ if __name__ == "__main__":
     LINK = "https://www.instagram.com/nairaa.babe/"
     
     try:
-        publish_post(conn, FILTER_TEXT, LINK)
+        publish_post(conn, FILTER_TEXT, None)
     except Exception as e:
         print("❌ Failed to publish text:", e)
 

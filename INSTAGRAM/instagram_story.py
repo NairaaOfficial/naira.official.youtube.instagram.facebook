@@ -7,7 +7,6 @@ import os
 import csv
 import random
 import urllib.parse
-from dotenv import load_dotenv
 from datetime import datetime
 from moviepy import *
 
@@ -16,14 +15,13 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Define your access token, Instagram account ID, and the video details
 # Get All required Tokens and Ids,
-load_dotenv()
-ACCOUNT_ID = os.getenv('INSTAGRAM_ACCOUNT_ID')
-BASE_URL = os.getenv('INSTAGRAM_BASE_URL')
-APP_ID = os.getenv('APP_ID')
-APP_SECRET = os.getenv('APP_SECRET')
-ACCESS_TOKEN = os.getenv('INSTAGRAM_ACCESS_TOKEN')
-API_VERSION = os.getenv('API_VERSION')
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+ACCOUNT_ID = os.environ['INSTAGRAM_ACCOUNT_ID']
+BASE_URL = os.environ['INSTAGRAM_BASE_URL']
+APP_ID = os.environ['APP_ID']
+APP_SECRET = os.environ['APP_SECRET']
+ACCESS_TOKEN = os.environ['INSTAGRAM_ACCESS_TOKEN']
+API_VERSION = os.environ['API_VERSION']
+GEMINI_API_KEY = os.environ['GEMINI_API_KEY']
 
 def initialize_connection():
     """Initialize the HTTP connection to Instagram Graph API."""
