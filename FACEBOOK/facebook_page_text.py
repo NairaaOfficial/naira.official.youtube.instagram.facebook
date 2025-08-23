@@ -258,9 +258,9 @@ if __name__ == "__main__":
     print("Generated Text:", TEXT)
     FILTER_TEXT = filter_generated_text(TEXT)
     # Add a custom text to the generated text
-    custom_text_file = 'FACEBOOK/caption.txt'
-    custom_text = read_caption(custom_text_file)
-    FILTER_TEXT += f" {custom_text}"
+    # custom_text_file = 'FACEBOOK/caption.txt'
+    # custom_text = read_caption(custom_text_file)
+    # FILTER_TEXT += f" {custom_text}"
     print("Filtered Text:", FILTER_TEXT)
     
     LINK = "https://www.instagram.com/nairaa.babe/"
