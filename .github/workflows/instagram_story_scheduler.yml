@@ -52,13 +52,3 @@ jobs:
             RENDER_BASE_VIDEO_URL: ${{ secrets.RENDER_BASE_VIDEO_URL }}
             GEMINI_FACEBOOK_IMAGE_VIDEO_KEY: ${{ secrets.GEMINI_FACEBOOK_IMAGE_VIDEO_KEY }}
         run: python3 INSTAGRAM/instagram_story.py
-        
-      # Check if .env has been modified, pull, and push the modified changes.
-      - name: Commit and Push Changes
-        run: |
-          git config --local user.name "github-actions"
-          git config --local user.email "github-actions@github.com"
-          git add INSTAGRAM/.env
-          git commit -m "Update .env after processing" || echo "No changes to commit"
-          git pull --rebase origin main || echo "No changes to pull"
-          git push || echo "No changes to push"
