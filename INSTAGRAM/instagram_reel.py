@@ -239,12 +239,12 @@ def get_video_url_for_day(counter):
     else:
         return None
     
-def create_media_object(conn, video_url, caption):
+def create_media_object(conn, caption):
     """Create a media object for a reel."""
     endpoint = f"/{API_VERSION}/{ACCOUNT_ID}/media"
     payload = {
         "media_type": "REELS",
-        "video_url": video_url,
+        "upload_type": "resumable",
         "caption": caption,
         "thumb_offset": random.randint(1,2),
         "audio_name": "nairaaa.official",
@@ -260,10 +260,10 @@ def create_media_object(conn, video_url, caption):
     print("media_object_response = ", media_object_response)
     if "id" in media_object_response:
         print("Media object created with ID:", media_object_response["id"])
-        return media_object_response["id"]
+        return media_object_response["id"], media_object_response["uri"]
     else:
         print("Error creating media object:", media_object_response)
-        return None
+        return None, None
 
 def upload_media(conn, upload_uri, video_url):
     """Upload the video to the given upload URI."""
@@ -401,23 +401,23 @@ def main():
     
     # Step 1: Create the media object
     response = get_audio_recommendations(conn)
-    media_object_id = create_media_object(conn, video_url, caption)
+    media_object_id,upload_uri = create_media_object(conn, caption)
     if not media_object_id:
         return  # Exit if media object creation fails
     
-    # # Step 2: Upload the media object
-    # upload_media(conn,upload_uri,video_url)
+    # Step 2: Upload the media object
+    upload_media(conn,upload_uri,video_url)
 
-    # # Step 3: Check upload media status until it's ready
-    # max_retries = 10
-    # for retry in range(1,max_retries + 1):
-    #     status_code, status = check_media_status(conn, media_object_id)
-    #     print("Checking Upload Status Time = ", retry)
-    #     print("Checking Upload Status Code = ",status_code)
-    #     print("Checking Upload Status = ",status)
-    #     if status_code == 'FINISHED' and status['uploading_phase']['status'] == 'complete':
-    #         break
-    #     time.sleep(60)
+    # Step 3: Check upload media status until it's ready
+    max_retries = 10
+    for retry in range(1,max_retries + 1):
+        status_code, status = check_media_status(conn, media_object_id)
+        print("Checking Upload Status Time = ", retry)
+        print("Checking Upload Status Code = ",status_code)
+        print("Checking Upload Status = ",status)
+        if status_code == 'FINISHED' and status['uploading_phase']['status'] == 'complete':
+            break
+        time.sleep(60)
     
     # Step 4: Publish the media if ready    
     publish_media_object(conn, media_object_id)
